@@ -1,0 +1,33 @@
+<html>
+<head>
+
+  <title>Terrain Generator</title>
+
+</head>
+
+<body>
+  <script type="text/javascript" src="js/HeightMap.js"></script>
+  <script type="text/javascript" src="js/PerlinGenerator.js"></script>
+  <script type="text/javascript" src="js/seedrandom.min.js"></script>
+
+  <script type="text/javascript">
+
+  var mapSize = 512;
+  var heightMap = new HeightMap(mapSize);
+
+  heightMap.addPerlinNoise(6.0);
+  heightMap.perturb(32.0, 32.0);    
+  for(var i=0; i<10; i++)
+    heightMap.erode(16.0);
+  heightMap.smoothen();
+
+  heightMap.toString();
+  heightMap.printInfo();
+
+  heightMap.offsetValues();
+  heightMap.printInfo();
+
+  </script>
+
+</body>
+</html>
