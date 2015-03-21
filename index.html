@@ -3,17 +3,76 @@
 
   <title>Terrain Generator</title>
 
+  <style>
+
+    body {
+      /* set margin to 0 and overflow to hidden, to go fullscreen */
+      margin: 0;
+      overflow: hidden;
+    }
+
+    #blocker {
+
+      position: absolute;
+      width: 100%;
+      height: 100%;
+
+      background-color: rgba(0,0,0,0.5);
+    }
+
+    #instructions {
+      width: 100%;
+      height: 100%;
+
+      display: -webkit-box;
+      display: -moz-box;
+      display: box;
+
+      -webkit-box-orient: horizontal;
+      -moz-box-orient: horizontal;
+      box-orient: horizontal;
+
+      -webkit-box-pack: center;
+      -moz-box-pack: center;
+      box-pack: center;
+
+      -webkit-box-align: center;
+      -moz-box-align: center;
+      box-align: center;
+
+      color: #ffffff;
+      text-align: center;
+
+      cursor: pointer;
+    }
+
+  </style>
+
 </head>
 
 <body>
+  <script type="text/javascript" src="js/three.min.js"></script>
   <script type="text/javascript" src="js/HeightMap.js"></script>
   <script type="text/javascript" src="js/PerlinGenerator.js"></script>
   <script type="text/javascript" src="js/seedrandom.min.js"></script>
+  <script type="text/javascript" src="js/PointerLockControls.js"></script>
+  <script type="text/javascript" src="js/MyPointerLock.js"></script>
+
+  <div id="blocker">
+
+    <div id="instructions">
+      <span style="font-size:40px">Click to play</span>
+      <br />
+      (W, A, S, D = Move, SPACE = Jump, MOUSE = Look around)
+    </div>
+
+  </div>
 
   <script type="text/javascript">
 
+  /*
   var mapSize = 512;
-  var heightMap = new HeightMap(mapSize);
+  var heightMap = new HeightMap(mapSize, 200); // the second argument is the seed
 
   heightMap.addPerlinNoise(6.0);
   heightMap.perturb(32.0, 32.0);    
@@ -26,6 +85,81 @@
 
   heightMap.offsetValues();
   heightMap.printInfo();
+
+  var heightMapArray = heightMap.getHeights();
+
+  */
+
+  // ---- threejs
+
+  // setup controls
+  var controls;
+  setMyPointerLock();
+
+  var SUN_LIGHT = 0xffa573;
+  var ambientLightColor = SUN_LIGHT;
+
+  var scene, renderer, camera;
+
+  window.onload = init;
+  window.addEventListener('resize', handleResize, false);
+
+  function init() {
+
+    scene = new THREE.Scene();
+
+    renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
+    renderer.setClearColor( 0xa7fae6, 1 );
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMapEnabled = true;
+
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 3000);
+
+    var ambientLight = new THREE.AmbientLight( ambientLightColor );
+    scene.add(ambientLight);
+
+    
+    // add a random cube to the scene
+    var cubeGeometry = new THREE.CubeGeometry(1, 1, 1);
+    var cubeMaterial = new THREE.MeshLambertMaterial({ color: "red" });
+    cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+    cube.castShadow = true;
+    cube.position.z = -10;
+    cube.position.y = 0;
+    cube.position.x = 0;
+    scene.add(cube);
+    
+
+    // plane
+    var geometry = new THREE.PlaneGeometry(10,10,9,9);
+    var material = new THREE.MeshLambertMaterial({ color: "red" });
+    plane = new THREE.Mesh( geometry, material );
+    plane.position.z = -20;
+    plane.position.y = 0;
+    plane.position.x = 0;
+    scene.add(plane);
+
+    // controls
+    controls = new THREE.PointerLockControls( camera );
+    scene.add( controls.getObject() ); // adds the camera to the scene
+
+    document.body.appendChild(renderer.domElement);
+    render(0.016);
+  }
+
+  function render(dt) {
+
+    updateControls();
+
+    requestAnimationFrame( render );
+    renderer.render(scene, camera);
+  }
+
+  function handleResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  }   
 
   </script>
 

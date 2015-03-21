@@ -8,14 +8,14 @@ var heights;
 var size;
 var perlin;
 
-function HeightMap(sizeP) {
+function HeightMap(sizeP, seed) {
 
 	size = sizeP;
 
 	heights = createMultidimensionalArray(size, size);
 	initMultidimensionalArray(heights);
 
-	perlin = new PerlinGenerator(100);
+	perlin = new PerlinGenerator(seed);
 }
 
 function initMultidimensionalArray(array) {
