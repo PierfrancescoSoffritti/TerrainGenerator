@@ -161,11 +161,11 @@ HeightMap.prototype.setPerlinGenerator = function(perlinV) {
 }
 
 // naive implementation
-HeightMap.prototype.offsetValues = function() {
+HeightMap.prototype.offsetValues = function(factor) {
 	// get min and max height
 	for(var i=0; i<heights.length; i++) {
 		for(var j=0; j<heights[0].length; j++) {
-			heights[i][j] = (heights[i][j] + 0.5) * 255;
+			heights[i][j] = (heights[i][j] + 0.5) * factor;
 		}
 	}
 }

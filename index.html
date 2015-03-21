@@ -5,10 +5,16 @@
 
   <style>
 
+    html, body {
+      width: 100%;
+      height: 100%;
+    }
+    
     body {
-      /* set margin to 0 and overflow to hidden, to go fullscreen */
+      background-color: #ffffff;
       margin: 0;
       overflow: hidden;
+      font-family: arial;
     }
 
     #blocker {
@@ -70,7 +76,7 @@
 
   <script type="text/javascript">
 
-  /*
+  // --- height map generation 
   var mapSize = 512;
   var heightMap = new HeightMap(mapSize, 200); // the second argument is the seed
 
@@ -80,24 +86,19 @@
     heightMap.erode(16.0);
   heightMap.smoothen();
 
-  heightMap.toString();
-  heightMap.printInfo();
+  //heightMap.toString();
+  //heightMap.printInfo();
 
-  heightMap.offsetValues();
-  heightMap.printInfo();
+  //heightMap.offsetValues();
+  //heightMap.printInfo();
 
   var heightMapArray = heightMap.getHeights();
 
-  */
-
-  // ---- threejs
+  // --- threejs
 
   // setup controls
   var controls;
   setMyPointerLock();
-
-  var SUN_LIGHT = 0xffa573;
-  var ambientLightColor = SUN_LIGHT;
 
   var scene, renderer, camera;
 
@@ -108,15 +109,32 @@
 
     scene = new THREE.Scene();
 
-    renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
-    renderer.setClearColor( 0xa7fae6, 1 );
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMapEnabled = true;
+    renderer = new THREE.WebGLRenderer();
+    renderer.setClearColor( 0xffffff);
+    renderer.setPixelRatio( window.devicePixelRatio );
+    renderer.setSize( window.innerWidth, window.innerHeight );
 
-    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 3000);
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 9000);
 
-    var ambientLight = new THREE.AmbientLight( ambientLightColor );
-    scene.add(ambientLight);
+    scene.fog = new THREE.Fog( 0xffffff, 0, 750 ); // is it working?
+
+    //var ambientLight = new THREE.AmbientLight( 0xffffff );
+    //scene.add(ambientLight);
+
+    // add spotlight for the shadows
+    var spotLight = new THREE.SpotLight(0xffffff);
+    spotLight.position.z = 20;
+    spotLight.position.y = 80;
+    spotLight.position.x = 30;
+    spotLight.shadowCameraNear = 20;
+    spotLight.shadowCameraFar = 50;
+    spotLight.castShadow = true;
+    scene.add(spotLight);
+
+    // lights                             sky color, ground color, intensity 
+    //var light = new THREE.HemisphereLight( 0x87CDE6, 0x000000, 0.75 );
+    //light.position.set( 0.5, 1, 0.75 );
+    //scene.add( light );
 
     
     // add a random cube to the scene
@@ -124,19 +142,30 @@
     var cubeMaterial = new THREE.MeshLambertMaterial({ color: "red" });
     cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
     cube.castShadow = true;
-    cube.position.z = -10;
+    cube.position.z = 0;
     cube.position.y = 0;
     cube.position.x = 0;
     scene.add(cube);
     
 
-    // plane
-    var geometry = new THREE.PlaneGeometry(10,10,9,9);
-    var material = new THREE.MeshLambertMaterial({ color: "red" });
+    // plane 
+    var geometry = new THREE.PlaneGeometry(60, 60, mapSize-1, mapSize-1);
+    var material = new THREE.MeshLambertMaterial({ color: "blue", fog: "true" });
     plane = new THREE.Mesh( geometry, material );
-    plane.position.z = -20;
-    plane.position.y = 0;
-    plane.position.x = 0;
+    plane.receiveShadow = true;
+    plane.castShadow = true;
+
+    var indx = 0;
+    for(var i=0; i<mapSize; i++) {
+      for(var j=0; j<mapSize; j++) {
+         plane.geometry.vertices[indx].z = heightMapArray[i][j] *13;
+         indx++;
+      }
+    }
+
+    // rotate terrain
+    plane.rotation.x = -0.5 * Math.PI;
+
     scene.add(plane);
 
     // controls

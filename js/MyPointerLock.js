@@ -172,14 +172,14 @@ function updateControls() {
     velocity.y -= velocity.y * 10.0 * delta;
 
     
-    if ( moveForward ) velocity.z -= 400.0 * delta;
-    if ( moveBackward ) velocity.z += 400.0 * delta;
+    if ( moveForward ) velocity.z -= 80.0 * delta;
+    if ( moveBackward ) velocity.z += 80.0 * delta;
 
-    if ( moveLeft ) velocity.x -= 400.0 * delta;
-    if ( moveRight ) velocity.x += 400.0 * delta;
+    if ( moveLeft ) velocity.x -= 80.0 * delta;
+    if ( moveRight ) velocity.x += 80.0 * delta;
 
-    if( moveUp ) velocity.y += 400.0 * delta;
-    if( moveDown ) velocity.y -= 400.0 * delta;
+    if( moveUp ) velocity.y += 80.0 * delta;
+    if( moveDown ) velocity.y -= 80.0 * delta;
 
     controls.getObject().translateX( velocity.x * delta );
     controls.getObject().translateY( velocity.y * delta );
