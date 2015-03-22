@@ -80,10 +80,10 @@
   var mapSize = 512;
   var heightMap = new HeightMap(mapSize, 200); // the second argument is the seed
 
-  heightMap.addPerlinNoise(6.0);
-  heightMap.perturb(32.0, 32.0);    
+  heightMap.addPerlinNoise(4.0);
+  heightMap.perturb(80.0, 32.0);    
   for(var i=0; i<10; i++)
-    heightMap.erode(16.0);
+    heightMap.erode(160.0);
   heightMap.smoothen();
 
   //heightMap.toString();
@@ -116,11 +116,12 @@
 
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 9000);
 
-    scene.fog = new THREE.Fog( 0xffffff, 0, 750 ); // is it working?
+    scene.fog = new THREE.Fog( 0xffffff, 0, 400 );
 
     //var ambientLight = new THREE.AmbientLight( 0xffffff );
     //scene.add(ambientLight);
 
+    /*
     // add spotlight for the shadows
     var spotLight = new THREE.SpotLight(0xffffff);
     spotLight.position.z = 20;
@@ -130,11 +131,12 @@
     spotLight.shadowCameraFar = 50;
     spotLight.castShadow = true;
     scene.add(spotLight);
+    */
 
     // lights                             sky color, ground color, intensity 
-    //var light = new THREE.HemisphereLight( 0x87CDE6, 0x000000, 0.75 );
-    //light.position.set( 0.5, 1, 0.75 );
-    //scene.add( light );
+    var light = new THREE.HemisphereLight( 0x87CDE6, 0x000000, 0.75 );
+    light.position.set( 0.5, 1, 0.75 );
+    scene.add( light );
 
     
     // add a random cube to the scene
@@ -149,16 +151,18 @@
     
 
     // plane 
-    var geometry = new THREE.PlaneGeometry(60, 60, mapSize-1, mapSize-1);
+    var geometry = new THREE.PlaneGeometry(mapSize, mapSize, mapSize-1, mapSize-1);
     var material = new THREE.MeshLambertMaterial({ color: "blue", fog: "true" });
     plane = new THREE.Mesh( geometry, material );
     plane.receiveShadow = true;
     plane.castShadow = true;
 
+    console.log("map size: " +mapSize +"x" +mapSize);
+
     var indx = 0;
     for(var i=0; i<mapSize; i++) {
       for(var j=0; j<mapSize; j++) {
-         plane.geometry.vertices[indx].z = heightMapArray[i][j] *13;
+         plane.geometry.vertices[indx].z = heightMapArray[i][j] *90;
          indx++;
       }
     }
