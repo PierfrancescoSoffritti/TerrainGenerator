@@ -58,6 +58,8 @@
 
 <body>
   <script type="text/javascript" src="js/three.min.js"></script>
+  <script type="text/javascript" src="js/stats.min.js"></script>
+
   <script type="text/javascript" src="js/HeightMap.js"></script>
   <script type="text/javascript" src="js/PerlinGenerator.js"></script>
   <script type="text/javascript" src="js/seedrandom.min.js"></script>
@@ -176,6 +178,9 @@
     controls = new THREE.PointerLockControls( camera );
     scene.add( controls.getObject() ); // adds the camera to the scene
 
+    // add fps stats
+    addStats();
+
     document.body.appendChild(renderer.domElement);
     render(0.016);
   }
@@ -183,10 +188,21 @@
   function render(dt) {
 
     updateControls();
+    stats.update();
 
     requestAnimationFrame( render );
     renderer.render(scene, camera);
   }
+
+  function addStats() {
+    stats = new Stats();
+    stats.setMode(0);
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.left = '10px';
+    stats.domElement.style.top = '10px';
+    document.body.appendChild(stats.domElement);
+  }
+
 
   function handleResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
