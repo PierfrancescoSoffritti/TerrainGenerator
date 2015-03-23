@@ -80,7 +80,7 @@
   var mapSize = 512;
   var heightMap = new HeightMap(mapSize, 200); // the second argument is the seed
 
-  heightMap.addPerlinNoise(4.0);
+  heightMap.addPerlinNoise(6.0);
   heightMap.perturb(80.0, 32.0);    
   for(var i=0; i<10; i++)
     heightMap.erode(160.0);
