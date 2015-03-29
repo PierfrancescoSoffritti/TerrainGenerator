@@ -27,8 +27,14 @@
     }
 
     #instructions {
-      width: 100%;
-      height: 100%;
+      position:absolute;
+      width:500px;
+      height:200px;
+      z-index:15;
+      top:50%;
+      left:50%;
+      right: :50%;
+      margin:-100px 0 0 -250px;
 
       display: -webkit-box;
       display: -moz-box;
@@ -51,6 +57,20 @@
 
       cursor: pointer;
     }
+    #connection_status {
+      position:absolute;
+      width:500px;
+      height:10px;
+      z-index:15;
+      top:5%;
+      left:68%;
+      right: :15%;
+
+      font-size: 100%;
+
+      color: #ffffff;
+      text-align: center;
+    }
 
   </style>
 
@@ -72,7 +92,13 @@
     <div id="instructions">
       <span style="font-size:40px">Click to play</span>
       <br />
-      (W, A, S, D = Move, SPACE = Jump, MOUSE = Look around)
+      (W, A, S, D = Move, R/F = move UP/DOWN, MOUSE = Look around)
+      <br />
+      ESC to quit
+    </div>
+
+    <div id="connection_status">
+      Connection Status: <font color="red"><b>DISCONNECTED</b></font>
     </div>
 
   </div>
@@ -100,15 +126,18 @@
   */
   var heightMapArray;
   var isRunning = false;
+  var connectionStatus = document.getElementById( 'connection_status' );
 
-  var ws = new WebSocket("wss://localhost:8888/ws");
+  var ws = new WebSocket("ws://localhost:8888/ws");
   ws.onopen = function () {
     console.log("### Connected ####");
+    connectionStatus.innerHTML = "Connection Status: <font color='green'><b>CONNECTED</b></font>";
 
     // we're connected! now we have to say to the Java server to send us the map
     setInterval(function(){
-      if(!isRunning) {
+      if(!isRunning && ws.readyState === 1) {
         ws.send("get\n");
+        connectionStatus.innerHTML = "Connection Status: <font color='green'><b>READY SENT</b></font><br/><font color='yellow'><b>WAITING DATA..</b></font>";
         console.log("### rdy sent ###");
       }
     },2000);    
@@ -116,16 +145,21 @@
 
   ws.onclose = function () {
     console.log("### Closed ####");
+    connectionStatus.innerHTML = "Connection Status: <font color='red'><b>CLOSED</b></font>";
   };
 
   ws.onmessage = function (evt) {
+    connectionStatus.innerHTML = "Connection Status: <font color='green'><b>RECEIVING DATA</b></font>";
     var message = evt.data;
     try {
+      connectionStatus.innerHTML = "Connection Status: <font color='green'><b>RECEIVING DATA</b></font>";
       heightMapArray = JSON.parse(message);
       // init the scene ONLY after receiving the heightMap
       console.log("### heightMap received ####");
       init();
+      connectionStatus.innerHTML = "Connection Status: <font color='green'><b>READY</b></font>";
     } catch (err) {
+      connectionStatus.innerHTML = "Connection Status: <font color='red'><b>ERROR while RECEIVING DATA</b></font>";
       console.log(message);
     }
   };
@@ -143,6 +177,7 @@
 
   function init() {
 
+    connectionStatus.innerHTML = "Connection Status: <font color='green'><b>INITIALIZING</b></font>";
     scene = new THREE.Scene();
 
     renderer = new THREE.WebGLRenderer();
