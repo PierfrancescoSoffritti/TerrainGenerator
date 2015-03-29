@@ -108,10 +108,10 @@ function setMyPointerLock() {
           moveRight = true;
           break;
 
-        case 33: // page up
+        case 82: // page up
           moveUp = true;
           break;
-        case 34: // page down
+        case 70: // page down
           moveDown = true;
           break;
 
@@ -145,10 +145,10 @@ function setMyPointerLock() {
           moveRight = false;
           break;
 
-        case 33: // page up
+        case 82: // page up
           moveUp = false;
           break;
-        case 34: // page down
+        case 70: // page down
           moveDown = false;
           break;
 
@@ -172,14 +172,14 @@ function updateControls() {
     velocity.y -= velocity.y * 10.0 * delta;
 
     
-    if ( moveForward ) velocity.z -= 80.0 * delta;
-    if ( moveBackward ) velocity.z += 80.0 * delta;
+    if ( moveForward ) velocity.z -= 150.0 * delta;
+    if ( moveBackward ) velocity.z += 150.0 * delta;
 
-    if ( moveLeft ) velocity.x -= 80.0 * delta;
-    if ( moveRight ) velocity.x += 80.0 * delta;
+    if ( moveLeft ) velocity.x -= 150.0 * delta;
+    if ( moveRight ) velocity.x += 150.0 * delta;
 
-    if( moveUp ) velocity.y += 80.0 * delta;
-    if( moveDown ) velocity.y -= 80.0 * delta;
+    if( moveUp ) velocity.y += 150.0 * delta;
+    if( moveDown ) velocity.y -= 150.0 * delta;
 
     controls.getObject().translateX( velocity.x * delta );
     controls.getObject().translateY( velocity.y * delta );
