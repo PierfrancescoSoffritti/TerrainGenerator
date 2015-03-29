@@ -154,6 +154,7 @@
     try {
       connectionStatus.innerHTML = "Connection Status: <font color='green'><b>RECEIVING DATA</b></font>";
       heightMapArray = JSON.parse(message);
+      mapSize = heightMapArray.length;
       // init the scene ONLY after receiving the heightMap
       console.log("### heightMap received ####");
       init();
