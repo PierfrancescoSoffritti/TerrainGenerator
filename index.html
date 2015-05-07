@@ -105,9 +105,9 @@
 
   <script type="text/javascript">
 
-  // --- height map generation 
+  // ---------------------------------------------------------------------
+  // --- height map generation (comment this if using socket)
   var mapSize = 512;
-  /*
   var heightMap = new HeightMap(mapSize, 200); // the second argument is the seed
 
   heightMap.addPerlinNoise(6.0);
@@ -123,7 +123,13 @@
   //heightMap.printInfo();
 
   var heightMapArray = heightMap.getHeights();
-  */
+
+  // ---------------------------------------------------------------------
+  
+
+  // ---------------------------------------------------------------------
+  // --- socket (useful only if used with the HeightMap Generator project)
+  /*
   var heightMapArray;
   var isRunning = false;
   var connectionStatus = document.getElementById( 'connection_status' );
@@ -164,6 +170,9 @@
       console.log(message);
     }
   };
+  
+  // -----------------------------
+  */
 
   // --- threejs
 
@@ -173,13 +182,16 @@
 
   var scene, renderer, camera;
 
-  //window.onload = init;
+  window.onload = init;
   window.addEventListener('resize', handleResize, false);
 
   function init() {
 
-    connectionStatus.innerHTML = "Connection Status: <font color='green'><b>INITIALIZING</b></font>";
-    scene = new THREE.Scene();
+    // ---------------------------------------------------------------------
+    // --- socket (useful only if used with the HeightMap Generator project)
+    //connectionStatus.innerHTML = "Connection Status: <font color='green'><b>INITIALIZING</b></font>";
+    // ---------------------------------------------------------------------
+    scene = new THREE.Scene();    
 
     renderer = new THREE.WebGLRenderer();
     renderer.setClearColor( 0xffffff);
